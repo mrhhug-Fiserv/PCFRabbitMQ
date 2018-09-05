@@ -3,8 +3,9 @@ package com.example.demo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,11 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class WebController {
 
     @Autowired
-    private AmqpTemplate amqpTemplate;
+    private RabbitTemplate rabbitTemplate;
+    tye myType = new ParameterizedTypeReference<String>();
     
     @PutMapping("/api/produce/{message}")
     public void produce(@PathVariable String message) {
-	amqpTemplate.convertAndSend(message);
+	rabbitTemplate.convertAndSend(message);
     }
     
     @PutMapping("/api/produce/random/{count}")
@@ -29,22 +31,16 @@ public class WebController {
 	for (int i=0 ; i < count; i++) {
 	    UUID uuid = UUID.randomUUID();
 	    if( uuid.hashCode() % 12 == 0) { // because twelve is that largest one syllable number
-		amqpTemplate.convertAndSend("MichaelIsMetal");
+		rabbitTemplate.convertAndSend("MichaelIsMetal");
 	    } else {
-		amqpTemplate.convertAndSend(uuid.toString());
+		rabbitTemplate.convertAndSend(uuid.toString());
 	    }
 	}
     }
     
     @GetMapping("/api/consume")
     public String consume() {
-	//this cast feel particularly shameful, but i couldn't find a good tutorial on declaring types
-	//and the commented line complained about a smartconverter, but wouldn't let me use :
-	//https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/messaging/converter/StringMessageConverter.html
-	//return amqpTemplate.receiveAndConvert(new ParameterizedTypeReference<String>() { });
-	
-	//So im guessing that will be fixed later and you will be bewildered about why i casted here.
-	return (String) amqpTemplate.receiveAndConvert();
+	return rabbitTemplate.receiveAndConvert(ParameterizedTypeReference.forType(String.class));
     }
     
     @GetMapping("/api/consume/*")
