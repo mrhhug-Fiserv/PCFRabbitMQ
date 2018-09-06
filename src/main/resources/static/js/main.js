@@ -2,18 +2,18 @@ $('#produce-btn').click(function() {
     var mes=$('#message').val();
     var url="api/produce/" + mes;
     console.log("Calling: " + url);
-    $('.response-body').html('Calling REST endpoint');
+    $('.response-body-amqp').html('Calling REST endpoint');
     if ( mes == "" ) {
-        $('.response-body').html('Please enter a message.');
+        $('.response-body-amqp').html('Please enter a message.');
     } else {
         $.ajax({
-            type: 'PUT',
+            type: 'POST',
             url: url,
             success: function(){
-                $('.response-body').html("ok");
+                $('.response-body-amqp').html("ok");
             },
             error: function(xhr, status, error) {
-                $('.response-body').html(
+                $('.response-body-amqp').html(
                     "status: " + status + "<br>" +
                     "error: " + error + "<br>" +
                     "xhr: " + "<pre>" + syntaxHighlight(xhr) + "</pre>"
@@ -25,15 +25,15 @@ $('#produce-btn').click(function() {
 $('#produceRandom-btn').click(function() {
     var url="api/produce/random/" + 10;
     console.log("Calling: " + url);
-    $('.response-body').html('Calling REST endpoint');
+    $('.response-body-amqp').html('Calling REST endpoint');
     $.ajax({
-        type: 'PUT',
+        type: 'POST',
         url: url,
         success: function(){
-            $('.response-body').html("ok");
+            $('.response-body-amqp').html("ok");
         },
         error: function(xhr, status, error) {
-            $('.response-body').html(
+            $('.response-body-amqp').html(
                 "status: " + status + "<br>" +
                 "error: " + error + "<br>" +
                 "xhr: " + "<pre>" + syntaxHighlight(xhr) + "</pre>"
@@ -45,18 +45,18 @@ $('#produceRandom-btn').click(function() {
 $('#consume-btn').click(function() {
     var url="api/consume";
     console.log("Calling: " + url);
-    $('.response-body').html('Calling REST endpoint');
+    $('.response-body-amqp').html('Calling REST endpoint');
     $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: url,
         success: function(result){
             var ret = "<table><tr><th>Message</th></tr>"
             ret += "<tr><td>"+result+"</td></tr>";
             ret += "</table>"
-            $('.response-body').html(ret);
+            $('.response-body-amqp').html(ret);
         },
         error: function(xhr, status, error) {
-            $('.response-body').html(
+            $('.response-body-amqp').html(
                 "status: " + status + "<br>" +
                 "error: " + error + "<br>" +
                 "xhr: " + "<pre>" + syntaxHighlight(xhr) + "</pre>"
@@ -68,9 +68,9 @@ $('#consume-btn').click(function() {
 $('#consumeAll-btn').click(function() {
     var url="api/consume/*";
     console.log("Calling: " + url);
-    $('.response-body').html('Calling REST endpoint');
+    $('.response-body-amqp').html('Calling REST endpoint');
     $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: url,
         success: function(result){
             var ret = "<table><tr><th>Message</th></tr>"
@@ -82,10 +82,10 @@ $('#consumeAll-btn').click(function() {
 		}
 	    }
             ret += "</table>"
-            $('.response-body').html(ret);
+            $('.response-body-amqp').html(ret);
         },
         error: function(xhr, status, error) {
-            $('.response-body').html(
+            $('.response-body-amqp-amqp-amqp-amqp-amqp-amqp-amqp-amqp-amqp').html(
                 "status: " + status + "<br>" +
                 "error: " + error + "<br>" +
                 "xhr: " + "<pre>" + syntaxHighlight(xhr) + "</pre>"
@@ -116,3 +116,9 @@ function syntaxHighlight(json) {
         return '<span class="' + cls + '">' + match + '</span>';
     });
 }
+var localhost = window.location.hostname
+var restResponse = 'curl -X POST "https://' + localhost + '/api/produce/{message}"<br>'
+restResponse += 'curl -X POST "https://' + localhost + '/api/produce/random/{int}"<br>'
+restResponse += 'curl -X POST "https://' + localhost + '/api/consume"<br>'
+restResponse += 'curl -X POST "https://' + localhost + '/api/consume/*"<br>'
+$('#response-body-rest').html(restResponse);

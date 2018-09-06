@@ -15,7 +15,7 @@ body {
 }
 
 p {
-    text-align: center;
+    text-align: left;
 }
 
 header {
@@ -153,17 +153,6 @@ main {
     margin: 10px;
 }
 
-#username {
-    border: 1px solid gray;
-}
-
-#select-bu {
-    text-align: justify;
-    text-align-last: center;
-    color: #808080;
-    border: 1px solid gray;
-}
-
 .btn {
     background-color: #1b78b3;
     color: #FFFFFF;
@@ -197,13 +186,6 @@ main {
     text-transform: uppercase;
     cursor: pointer;
 }
-
-/*
-.disabled-btn:focus,
-.disabled-btn:hover {
-	background-color: #188cd6;
-}
-*/
 
 .disabled-btn:active {
     margin-top: 6px;
