@@ -19,7 +19,6 @@ public class WebController {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
-    tye myType = new ParameterizedTypeReference<String>();
     
     @PutMapping("/api/produce/{message}")
     public void produce(@PathVariable String message) {
