@@ -85,7 +85,27 @@ $('#consumeAll-btn').click(function() {
             $('.response-body-amqp').html(ret);
         },
         error: function(xhr, status, error) {
-            $('.response-body-amqp-amqp-amqp-amqp-amqp-amqp-amqp-amqp-amqp').html(
+            $('.response-body-amqp').html(
+                "status: " + status + "<br>" +
+                "error: " + error + "<br>" +
+                "xhr: " + "<pre>" + syntaxHighlight(xhr) + "</pre>"
+            );
+        },
+        dataType: 'json'
+    });
+});
+$('#count-btn').click(function() {
+    var url="api/count";
+    console.log("Calling: " + url);
+    $('.response-body-amqp').html('Calling REST endpoint');
+    $.ajax({
+        type: 'GET',
+        url: url,
+        success: function(result){
+            $('.response-body-amqp').html("ok");
+        },
+        error: function(xhr, status, error) {
+            $('.response-body-amqp').html(
                 "status: " + status + "<br>" +
                 "error: " + error + "<br>" +
                 "xhr: " + "<pre>" + syntaxHighlight(xhr) + "</pre>"

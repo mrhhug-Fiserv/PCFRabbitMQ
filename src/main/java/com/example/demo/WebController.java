@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +19,9 @@ public class WebController {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
-    //StringMessageConverter typeRef = new StringMessageConverter();
+
+    @Autowired
+    private AmqpAdmin amqpAdmin;
     
     @PostMapping("/api/produce/{message}")
     public void produce(@PathVariable String message) {
@@ -56,5 +60,10 @@ public class WebController {
 	    buf = consume();
 	}
 	return ret;
+    }
+    
+    @GetMapping("/api/count")
+    public Integer countOP() {
+        return (Integer) amqpAdmin.getQueueProperties("Desmond_Llewelyn").get("QUEUE_MESSAGE_COUNT");
     }
 }
