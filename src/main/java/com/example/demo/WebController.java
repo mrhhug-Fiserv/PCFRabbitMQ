@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +26,7 @@ public class WebController {
     
     @PostMapping("/api/produce/{message}")
     public void produce(@PathVariable String message) {
-	rabbitTemplate.convertAndSend(message);
+	rabbitTemplate.convertAndSend(new MichaelsMessage(message));
     }
     
     @PostMapping("/api/produce/random/{count}")
@@ -33,22 +34,24 @@ public class WebController {
 	for (int i=0 ; i < count; i++) {
 	    UUID uuid = UUID.randomUUID();
 	    if( uuid.hashCode() % 12 == 0) { // because twelve is that largest one syllable number
-		rabbitTemplate.convertAndSend("MichaelIsMetal");
+		rabbitTemplate.convertAndSend(new MichaelsMessage("MichaelIsMetal"));
 	    } else {
-		rabbitTemplate.convertAndSend(uuid.toString());
+		rabbitTemplate.convertAndSend(new MichaelsMessage(uuid.toString()));
 	    }
 	}
     }
     
     @PostMapping("/api/consume")
     public String consume() {
-	//this cast feel particularly shameful, but i couldn't find a good tutorial on declaring types
+        //this cast feel particularly shameful, but i couldn't find a good example this seemingly simple method
 	//and the commented line complained about a smartconverter, but wouldn't let me use :
-	//https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/messaging/converter/StringMessageConverter.html
-	//return amqpTemplate.receiveAndConvert(new ParameterizedTypeReference<String>() { });
-	
-	//So im guessing that will be fixed later and you will be bewildered about why i casted here.
-	return (String) rabbitTemplate.receiveAndConvert();
+	//https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/messaging/converter/StringMessageConverter.html	
+	//MichaelsMessage ret = rabbitTemplate.receiveAndConvert(new ParameterizedTypeReference<MichaelsMessage>() {});
+        MichaelsMessage ret = (MichaelsMessage) rabbitTemplate.receiveAndConvert();
+        if(null == ret) {
+            return null;
+        }
+        return ret.toString();
     }
     
     @PostMapping("/api/consume/*")
@@ -63,7 +66,7 @@ public class WebController {
     }
     
     @GetMapping("/api/count")
-    public Integer countOP() {
-        return (Integer) amqpAdmin.getQueueProperties("Desmond_Llewelyn").get("QUEUE_MESSAGE_COUNT");
+    public Object count() {
+        return amqpAdmin.getQueueProperties(Static.QUEUENAME).get("QUEUE_MESSAGE_COUNT");
     }
 }

@@ -102,7 +102,7 @@ $('#count-btn').click(function() {
         type: 'GET',
         url: url,
         success: function(result){
-            $('.response-body-amqp').html("ok");
+            $('.response-body-amqp').html(result);
         },
         error: function(xhr, status, error) {
             $('.response-body-amqp').html(
@@ -141,4 +141,5 @@ var restResponse = 'curl -X POST "https://' + localhost + '/api/produce/{message
 restResponse += 'curl -X POST "https://' + localhost + '/api/produce/random/{int}"<br>'
 restResponse += 'curl -X POST "https://' + localhost + '/api/consume"<br>'
 restResponse += 'curl -X POST "https://' + localhost + '/api/consume/*"<br>'
+restResponse += 'curl -X POST "https://' + localhost + '/api/count"<br>'
 $('#response-body-rest').html(restResponse);
